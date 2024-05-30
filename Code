@@ -1,0 +1,31 @@
+from . import db
+from flask_login import UserMixin
+
+class Student(db.Model):
+    __tablename__ = 'student'
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    username = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(50))
+    grades = db.relationship('Grade', backref='student', lazy=True)
+
+class Subject(db.Model):
+    __tablename__ = 'subject'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    grades = db.relationship('Grade', backref='subject', lazy=True)
+
+class Grade(db.Model):
+    __tablename__ = 'grade'
+    id = db.Column(db.Integer, primary_key=True)
+    period = db.Column(db.Integer)
+    score = db.Column(db.Float)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
+
+class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(50))
